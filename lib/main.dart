@@ -3,6 +3,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:owen/Widgets/cardStock.dart';
+import 'package:owen/Widgets/movieDetailsCard.dart';
+import 'package:owen/Widgets/posterCard.dart';
+import 'package:owen/Widgets/wowDetailsCard.dart';
 
 Future<Wow> fetchAlbum() async {
   final response = await http
@@ -141,128 +145,37 @@ class _MyAppState extends State<MyApp> {
               if (snapshot.hasData) {
                 return Column(
                   children: [
-                    Card(
-                      elevation: 6,
-                      margin: EdgeInsets.all(20),
-                      child: Container(
-                        width: 300,
-                        height: 300,
-                        child: Image.network(
-                          snapshot.data!.poster.toString(),
-                          fit: BoxFit.fitHeight,
-                        ),
-                      ),
-                    ),
+                    cardStock(
+                        cardChild:
+                        posterCard(snapshot.data!.poster.toString())),
+
                     const Text(
                       "Movie Details",
                       style: TextStyle(fontSize: 22),
                     ),
-                    const SizedBox(height: 5),
-                    Card(
-                      margin: const EdgeInsets.all(5),
-                      elevation: 6,
-                      child: SizedBox(
-                        width: 300,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            //Text("Movie: " + snapshot.data?.movie),
-                            Row(
-                              children: [
-                                const Text("Director: ",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                                Text(snapshot.data?.director),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                const Text("Character: ",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                                Text(snapshot.data?.character),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                const Text("Full Line: ",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                                Text("\"" + snapshot.data?.fullLine + "\"",
-                                    style:
-                                        TextStyle(fontStyle: FontStyle.italic)),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                const Text("Year: ",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                                Text(snapshot.data!.year.toString()),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Row(
-                                  children: [
-                                    const Text("Length : ",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    Text(snapshot.data?.movieDuration),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 2),
+                    cardStock(cardChild: movieDetails(
+                        movieDirector: snapshot.data!.director,
+                        movieCharacter: snapshot.data!.character,
+                        movieFullLine: snapshot.data!.fullLine,
+                        movieYear: snapshot.data!.year.toString(),
+                        movieLength: snapshot.data!.movieDuration)),
+                    const SizedBox(height: 2),
                     const Text(
                       "Wow Details",
                       style: TextStyle(fontSize: 22),
                     ),
                     const SizedBox(
-                      height: 5,
+                      height: 2,
                     ),
-                    Card(
-                      margin: const EdgeInsets.all(5),
-                      elevation: 6,
-                      child: Container(
-                        width: 300,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                const Text("Current movie wow: ",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                                Text(snapshot.data!.wows.toString()),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                const Text("Wow timestamp: ",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                                Text(snapshot.data?.timestamp),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                const Text("Total wows in movie: ",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                                Text(snapshot.data!.totalWows.toString()),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
+                    // toString needs to be called so we don't get and int
+                    // error. Even though above it is toString?
+                    cardStock(cardChild: wowDetails(
+                        wowCurrent: snapshot.data!.wows.toString(),
+                        wowTotal: snapshot.data!.totalWows.toString(),
+                        wowTimestamp: snapshot.data!.timestamp)),
                     const SizedBox(
-                      height: 5,
+                      height: 2,
                     ),
                     ElevatedButton(
                         onPressed: _aWholeNewWow,
